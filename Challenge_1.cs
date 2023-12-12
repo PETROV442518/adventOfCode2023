@@ -8,7 +8,7 @@ namespace adventOfCode
 {
     internal class Challenge_1
     {
-        const string FILE_PATH = "C:\\Users\\tsvetan.petrov\\source\\repos\\adventOfCode\\adventOfCode\\input.txt";
+        const string FILE_PATH = "C:\\Users\\tsvetan.petrov\\source\\repos\\adventOfCode\\adventOfCode\\Inputs\\input1.txt";
 
         static Dictionary<string, string> translations = new Dictionary<string, string>
     {
