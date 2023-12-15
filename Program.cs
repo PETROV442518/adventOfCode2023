@@ -8,6 +8,9 @@ class Program
         //challenge1.Challenge_1_Output();
 
         var challenge2 = new Challenge_2();
-        challenge2.WriteResult();
+        //challenge2.WriteResult();
+
+        var challenge3 = new Challenge_3();
+        challenge3.WriteResult();
     }
 }
