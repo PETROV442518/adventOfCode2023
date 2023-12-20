@@ -1,60 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace adventOfCode
+class Challenge_3
 {
-    internal class Challenge_3
+    public object PartOne(string input)
     {
-        const string FILE_PATH = "C:\\Users\\tsvetan.petrov\\source\\repos\\adventOfCode\\adventOfCode\\Inputs\\input3.txt";
+        var rows = input.Split("\n");
+        var symbols = Parse(rows, new Regex(@"[^.0-9]"));
+        var nums = Parse(rows, new Regex(@"\d+"));
 
-        private void challenge_3()
-        {
-            var input = File.ReadAllLines(FILE_PATH);
-            var matrix = new char[input.Length][];
-            for (int i = 0; i < input.Length; i++)
-            {
-                matrix[i] = input[i].ToCharArray();
-            }
-            GetSymbol(matrix);
-        }
-
-        private void GetSymbol(char[][] matrix)
-        {
-            var sum = 0;
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                for (int y = 0; y < matrix.GetLength(0); y++)
-                {
-                    char symbol = matrix[i][y];
-                    if (!char.IsDigit(symbol) && symbol != '.')
-                    {
-                        string pattern = @$"\d\{symbol}\d|\{symbol}\d|\d\{symbol}";
-                        var symbolsToCheckForDigit = new List<char>()
-                        {
-                            matrix[i-1][y-1], matrix[i-1][y], matrix[i-1][y+1],
-                            matrix[i][y-1],matrix[i][y+1],
-                            matrix[i+1][y-1],matrix[i+1][y], matrix[i+1][y+1]
-                        };
-                        foreach (var ch in symbolsToCheckForDigit)
-                        {
-                            if (char.IsDigit(ch))
-                            {
-                                Console.WriteLine(ch);
-                            }
-                        }
-                        
-                    }
-                }
-            }
-            Console.WriteLine(sum);
-        }
-        public void WriteResult()
-        {
-            challenge_3();
-        }
+        return (
+            from n in nums
+            where symbols.Any(s => Adjacent(s, n))
+            select n.Int
+        ).Sum();
     }
+
+    public object PartTwo(string input)
+    {
+        var rows = input.Split("\n");
+        var gears = Parse(rows, new Regex(@"\*"));
+        var numbers = Parse(rows, new Regex(@"\d+"));
+
+        return (
+            from g in gears
+            let neighbours = from n in numbers where Adjacent(n, g) select n.Int
+            where neighbours.Count() == 2
+            select neighbours.First() * neighbours.Last()
+        ).Sum();
+    }
+
+    // checks that the parts are touching each other, i.e. rows are within 1 
+    // step and also the columns (using https://stackoverflow.com/a/3269471).
+    bool Adjacent(Part p1, Part p2) =>
+        Math.Abs(p2.Irow - p1.Irow) <= 1 &&
+        p1.Icol <= p2.Icol + p2.Text.Length &&
+        p2.Icol <= p1.Icol + p1.Text.Length;
+
+    // returns the matches of rx with its coordinates
+    Part[] Parse(string[] rows, Regex rx) => (
+        from irow in Enumerable.Range(0, rows.Length)
+        from match in rx.Matches(rows[irow])
+        select new Part(match.Value, irow, match.Index)
+    ).ToArray();
+}
+
+record Part(string Text, int Irow, int Icol)
+{
+    public int Int => int.Parse(Text);
 }

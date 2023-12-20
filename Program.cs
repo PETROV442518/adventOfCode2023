@@ -11,6 +11,9 @@ class Program
         //challenge2.WriteResult();
 
         var challenge3 = new Challenge_3();
-        challenge3.WriteResult();
+
+        string input = File.ReadAllText("C:\\Users\\tsvetan.petrov\\source\\repos\\adventOfCode\\adventOfCode\\Inputs\\input3.txt");
+        Console.WriteLine(challenge3.PartOne(input));
+        challenge3.PartTwo(input);
     }
 }
